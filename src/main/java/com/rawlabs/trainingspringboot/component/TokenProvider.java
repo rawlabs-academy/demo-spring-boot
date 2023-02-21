@@ -16,17 +16,14 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
 public class TokenProvider {
 
     @Value("${jwt.token.validity}")
-    private long tokenExpiresIn;
+    private Integer tokenExpiresIn;
 
     @Value("${jwt.signing.key}")
     private String jwtSigningKey;
@@ -67,11 +64,17 @@ public class TokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
+        Date expiresIn = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(expiresIn);
+        c.add(Calendar.HOUR, tokenExpiresIn);
+        expiresIn = c.getTime();
+
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .signWith(key)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpiresIn))
+                .setExpiration(expiresIn)
                 .compact();
     }
 

@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http, TokenProvider tokenProvider, UserRepository userRepository) throws Exception {
         http.httpBasic().and().cors().and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
